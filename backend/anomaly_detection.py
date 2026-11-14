@@ -1,37 +1,68 @@
-﻿import numpy as np
+﻿import math
+import numpy as np
 from sklearn.ensemble import IsolationForest
 
 
-def detect_anomalies(network_data):
+def detect_anomalies(network_data, current_metrics=None):
     """
-    Detect unusual network behaviour using Isolation Forest.
-
-    Expected input:
-    A list of dictionaries containing:
-    latency, packet_loss, interface_errors
+    Detect anomalies in historical and current network data
+    using Isolation Forest.
     """
 
     if not isinstance(network_data, list) or len(network_data) < 5:
         raise ValueError(
-            "At least 5 network records are required for anomaly detection."
+            "At least 5 historical network records are required."
         )
 
     features = []
 
     for record in network_data:
         try:
-            features.append([
+            values = [
                 float(record["latency"]),
                 float(record["packet_loss"]),
                 float(record["interface_errors"])
-            ])
+            ]
+
+            if not all(math.isfinite(value) for value in values):
+                raise ValueError
+
+            if any(value < 0 for value in values):
+                raise ValueError
+
+            features.append(values)
+
         except (KeyError, TypeError, ValueError):
             raise ValueError(
-                "Every record must contain valid latency, packet_loss "
-                "and interface_errors values."
+                "Every record must contain valid non-negative "
+                "latency, packet_loss and interface_errors values."
             )
 
-    data = np.array(features)
+    historical_count = len(features)
+
+    if current_metrics is not None:
+        try:
+            current_values = [
+                float(current_metrics["latency"]),
+                float(current_metrics["packet_loss"]),
+                float(current_metrics["interface_errors"])
+            ]
+
+            if not all(math.isfinite(value) for value in current_values):
+                raise ValueError
+
+            if any(value < 0 for value in current_values):
+                raise ValueError
+
+            features.append(current_values)
+
+        except (KeyError, TypeError, ValueError):
+            raise ValueError(
+                "Current metrics must contain valid non-negative "
+                "latency, packet_loss and interface_errors values."
+            )
+
+    data = np.array(features, dtype=float)
 
     model = IsolationForest(
         contamination=0.2,
@@ -46,16 +77,30 @@ def detect_anomalies(network_data):
     for index, prediction in enumerate(predictions):
 
         is_anomaly = prediction == -1
+        is_current = index == historical_count and current_metrics is not None
 
         results.append({
             "record": index + 1,
+            "record_type": (
+                "Current Network" if is_current else "Historical"
+            ),
             "latency": float(data[index][0]),
             "packet_loss": float(data[index][1]),
-            "interface_errors": int(data[index][2]),
+            "interface_errors": float(data[index][2]),
             "anomaly": bool(is_anomaly),
             "status": "Anomaly" if is_anomaly else "Normal",
             "anomaly_score": round(float(anomaly_scores[index]), 4)
         })
+
+    historical_results = results[:historical_count]
+
+    historical_anomalies = sum(
+        1 for result in historical_results if result["anomaly"]
+    )
+
+    current_result = (
+        results[-1] if current_metrics is not None else None
+    )
 
     total_anomalies = sum(
         1 for result in results if result["anomaly"]
@@ -63,8 +108,11 @@ def detect_anomalies(network_data):
 
     return {
         "total_records": len(results),
+        "historical_records": historical_count,
         "anomalies_detected": total_anomalies,
+        "historical_anomalies_detected": historical_anomalies,
         "normal_records": len(results) - total_anomalies,
+        "current_network": current_result,
         "results": results
     }
 
@@ -84,18 +132,28 @@ if __name__ == "__main__":
         {"latency": 500, "packet_loss": 40, "interface_errors": 200}
     ]
 
-    report = detect_anomalies(sample_data)
+    current_data = {
+        "latency": 250,
+        "packet_loss": 15,
+        "interface_errors": 75
+    }
+
+    report = detect_anomalies(sample_data, current_data)
 
     print("\n========== NETFIX AI ANOMALY REPORT ==========")
     print("Total Records:", report["total_records"])
-    print("Anomalies Detected:", report["anomalies_detected"])
-    print("Normal Records:", report["normal_records"])
+    print("Historical Anomalies:", report["historical_anomalies_detected"])
+    print("Total Anomalies:", report["anomalies_detected"])
+
+    print("\nCurrent Network Analysis:")
+    print(report["current_network"])
 
     print("\nDetailed Results:")
 
     for result in report["results"]:
         print(
-            f"Record {result['record']}: "
+            f"Record {result['record']} "
+            f"({result['record_type']}): "
             f"{result['status']} | "
             f"Latency: {result['latency']} ms | "
             f"Packet Loss: {result['packet_loss']}% | "

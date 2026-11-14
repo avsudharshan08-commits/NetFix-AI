@@ -175,10 +175,13 @@ def analyze_network():
 
         if network_history:
 
-            anomaly_report = detect_anomalies(network_history)
+            anomaly_report = detect_anomalies(
+                network_history,
+                current_metrics=metrics
+            )
 
             anomaly_report["message"] = (
-                "Historical network analysis completed successfully."
+                "Historical and current network anomaly analysis completed successfully."
             )
 
         else:
@@ -234,5 +237,3 @@ if __name__ == "__main__":
         port=5000,
         debug=True
     )
-
-
