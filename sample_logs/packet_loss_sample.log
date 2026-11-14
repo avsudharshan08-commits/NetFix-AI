@@ -1,0 +1,16 @@
+Pinging 8.8.8.8 with 32 bytes of data:
+Reply from 8.8.8.8: bytes=32 time=16ms TTL=113
+Request timed out.
+Reply from 8.8.8.8: bytes=32 time=245ms TTL=113
+Request timed out.
+Reply from 8.8.8.8: bytes=32 time=190ms TTL=113
+Request timed out.
+Reply from 8.8.8.8: bytes=32 time=310ms TTL=113
+Request timed out.
+Reply from 8.8.8.8: bytes=32 time=187ms TTL=113
+Reply from 8.8.8.8: bytes=32 time=215ms TTL=113
+
+Ping statistics for 8.8.8.8:
+    Packets: Sent = 10, Received = 6, Lost = 4 (40% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 16ms, Maximum = 310ms, Average = 193ms

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NetFix AI – Intelligent Network Hardware Troubleshooter</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header class="navbar">
+    <div class="brand">
+      <h1>NetFix <span>AI</span></h1>
+      <p>Intelligent Network Hardware Troubleshooter</p>
+    </div>
+    <div class="mock-controls">
+      <label for="mockScenario">Test Scenario:</label>
+      <select id="mockScenario">
+        <option value="degraded">Degraded (High Jitter / DNS)</option>
+        <option value="healthy">Healthy Network</option>
+        <option value="critical">Critical (Packet Loss / Cable Fault)</option>
+      </select>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card input-section">
+      <div class="input-group">
+        <input type="text" id="targetHost" placeholder="Enter IP or Domain (e.g., 8.8.8.8 or google.com)" />
+        <button id="runDiagBtn" class="btn-primary">Run Live Diagnostics</button>
+      </div>
+      <div class="divider">OR</div>
+      <div class="upload-group">
+        <input type="file" id="logFileInput" accept=".log,.txt,.csv" />
+        <button id="uploadLogBtn" class="btn-secondary">Analyze Log File</button>
+      </div>
+    </section>
+
+    <div id="loader" class="loader hidden">Analyzing network telemetry & running ML anomaly detection...</div>
+    <div id="errorBanner" class="error-banner hidden"></div>
+
+    <div id="dashboardContent">
+      <section class="kpi-grid">
+        <div class="card kpi-card" id="healthCard">
+          <h3>Health Score</h3>
+          <p class="kpi-value" id="healthScore">--</p>
+          <span class="badge" id="statusBadge">Pending</span>
+        </div>
+        <div class="card kpi-card">
+          <h3>Avg Latency</h3>
+          <p class="kpi-value" id="avgLatency">-- ms</p>
+        </div>
+        <div class="card kpi-card">
+          <h3>Packet Loss</h3>
+          <p class="kpi-value" id="packetLoss">-- %</p>
+        </div>
+        <div class="card kpi-card">
+          <h3>DNS Resolution</h3>
+          <p class="kpi-value" id="dnsTime">-- ms</p>
+        </div>
+      </section>
+
+      <section class="main-grid">
+        <div class="card chart-card">
+          <h3>Latency & Packet Loss Telemetry</h3>
+          <canvas id="telemetryChart"></canvas>
+        </div>
+
+        <div class="card ai-card">
+          <div class="ai-header">
+            <h3>AI Root Cause Analysis</h3>
+            <span id="anomalyTag" class="badge">Normal</span>
+          </div>
+          <p id="rootCauseText" class="root-cause">Run a diagnostic or upload a log file to inspect network health.</p>
+          <h4>Recommended Troubleshooting Steps</h4>
+          <ul id="recommendationsList" class="rec-list"></ul>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="mockData.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
