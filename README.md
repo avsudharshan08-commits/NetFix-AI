@@ -1,26 +1,91 @@
-# NetFix AI – Intelligent Network Hardware Troubleshooter
+@'
+# NetFix AI - Intelligent Network Hardware Troubleshooter
 
-**FirstCommit '26 – Round 2 Submission**  
-**Team:** Druv Kumar (Backend & AI) | Sudarshan (Frontend & Testing Lead)
+**FirstCommit '26 - Round 2 Submission**
 
-## Overview
-NetFix AI is an intelligent network diagnostic and hardware troubleshooting application designed to move beyond raw command-line outputs. Instead of leaving users to interpret cryptic `ping`, `traceroute`, or `nslookup` logs, NetFix AI ingests live network telemetry or historical log files, detects anomalies using Machine Learning, pinpoints probable hardware or link failures, and provides actionable step-by-step fixes.
+**Team:** IOTpro  
+**Team Members:** Dhruv Kumar (Team Lead, Backend and AI) | Sudarshan (Frontend and Testing Lead)
 
-## Key Features
-- **Dual Diagnostic Modes:** Run real-time network diagnostics against any IP address or domain, or upload `.log`, `.txt`, and `.csv` diagnostic files for offline inspection.
-- **Health Scoring & Telemetry Dashboard:** Displays an overall Network Health Score alongside Average Latency, Packet Loss percentage, and DNS Resolution time.
-- **Interactive Telemetry Visualization:** Plots latency spikes and packet loss trends over time using Chart.js.
-- **ML Anomaly Detection & Root Cause Analysis:** Identifies abnormal jitter, DNS bottlenecks, and hop-level packet drops to distinguish between local hardware/cable faults, router congestion, and upstream ISP issues.
-- **Actionable Troubleshooting Engine:** Generates prioritized, plain-English remediation steps tailored to the detected failure mode.
+---
 
-## Tech Stack
-- **Frontend:** HTML5, CSS3, Vanilla JavaScript (ES6+), Chart.js
-- **Backend & AI:** Python, Flask, Flask-CORS, Scikit-Learn / Statistical Anomaly Detection, Subprocess Network Utilities (`ping`, `tracert`, DNS lookup)
+## 1. Overview
 
-## Project Structure
+NetFix AI is an intelligent network diagnostic and troubleshooting application that helps users identify network connectivity problems, detect abnormal network behaviour, and understand probable causes of network failures.
+
+Users can run live network diagnostics or upload historical diagnostic log files. The system analyses network metrics, detects anomalies using Machine Learning, identifies probable root causes, and generates actionable troubleshooting recommendations.
+
+## 2. Key Features
+
+### Live Network Diagnostics
+- Tests internet connectivity using ping.
+- Checks DNS resolution.
+- Detects the default network gateway.
+- Measures latency and packet loss.
+- Performs traceroute to inspect network routes.
+
+### Network Health Dashboard
+- Displays an overall network health score.
+- Shows average latency, packet loss, and interface errors.
+- Displays gateway and DNS status.
+- Visualizes network telemetry using Chart.js.
+
+### Diagnostic Log Analysis
+- Supports `.log`, `.txt`, and `.csv` uploads.
+- Extracts supported network metrics.
+- Analyses uploaded data separately from live network measurements.
+
+### Machine Learning Anomaly Detection
+- Uses the Isolation Forest algorithm from Scikit-learn.
+- Analyses historical network measurements.
+- Identifies unusual latency, packet loss, and interface error patterns.
+- Distinguishes historical anomalies from current network anomalies.
+
+### Root Cause Analysis
+- Uses diagnostic rules to identify probable network problems.
+- Detects high latency, packet loss, interface errors, gateway failures, and DNS failures.
+- Provides confidence-scored probable causes.
+
+### Troubleshooting Recommendations
+- Generates practical recommendations based on detected issues.
+- Suggests checks for network cables, adapters, routers, DNS configuration, and network connectivity.
+
+## 3. Technology Stack
+
+| Component | Technologies |
+|---|---|
+| Frontend | HTML5, CSS3, JavaScript |
+| Data Visualization | Chart.js |
+| Backend | Python, Flask, Flask-CORS |
+| Machine Learning | Scikit-learn, Isolation Forest |
+| Numerical Processing | NumPy |
+| Network Diagnostics | Ping, Traceroute, Python Socket |
+| Version Control | Git and GitHub |
+
+## 4. Project Structure
+
 ```text
 NetFix-AI/
-├── frontend/          # Dashboard UI, Chart.js telemetry, and API client
-├── backend/           # Flask REST API, network diagnostic runner, and ML engine
-├── sample_logs/       # Sample healthy and packet-loss diagnostic logs for testing
-└── README.md          # Project documentation
+|
+|-- backend/
+|   |-- app.py
+|   |-- diagnostics.py
+|   |-- live_diagnostics.py
+|   |-- anomaly_detection.py
+|   |-- root_cause.py
+|   |-- ai_assistant.py
+|   |-- __init__.py
+|
+|-- frontend/
+|   |-- index.html
+|   |-- style.css
+|   |-- app.js
+|
+|-- datasets/
+|   |-- sample_network_data.csv
+|
+|-- sample_logs/
+|   |-- Healthy and problematic network logs
+|
+|-- requirements.txt
+|-- .gitignore
+|-- README.md
