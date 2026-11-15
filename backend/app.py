@@ -1,4 +1,4 @@
-﻿import os
+import os
 import csv
 
 from flask import Flask, request, jsonify
@@ -177,7 +177,7 @@ def analyze_network():
 
             anomaly_report = detect_anomalies(
                 network_history,
-                current_metrics=metrics
+                current_metrics=metrics if data.get("include_current_metrics", True) else None
             )
 
             anomaly_report["message"] = (
